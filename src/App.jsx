@@ -1,19 +1,40 @@
 import React from 'react';
+import { HashRouter, Routes, Route, NavLink } from 'react-router-dom';
 import RemoteMount from './RemoteMount';
+import Landing from './Landing';
+import './styles/app.css';
 
-const loadAngular = () => import('angularRemote/Mount');
+// Loader functions are defined at module scope, not inside the component.
+// RemoteMount keys its effect on `load`, so an inline arrow would create a
+// new function every render and remount the remote on every re-render.
 const loadVue = () => import('vueRemote/Mount');
+const loadAngular = () => import('angularRemote/Mount');
 
 export default function App() {
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif' }}>
-      <header style={{ padding: '1rem', background: '#264653', color: '#fff' }}>
-        <strong>Amor Lineribus</strong> - shell (React)
-      </header>
-      <main>
-        <RemoteMount load={loadVue} />
-        <RemoteMount load={loadAngular} />
-      </main>
-    </div>
+    <HashRouter>
+      <div className="app">
+        <header className="app__nav">
+          <span className="app__brand">Amor Lineribus</span>
+          <nav className="app__links">
+            <NavLink to="/" end>Home</NavLink>
+            <NavLink to="/dashboard">Dashboard</NavLink>
+            <NavLink to="/lesson">Lesson</NavLink>
+          </nav>
+        </header>
+
+        <main className="app__main">
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/dashboard" element={<RemoteMount load={loadVue} />} />
+            <Route path="/lesson" element={<RemoteMount load={loadAngular} />} />
+          </Routes>
+        </main>
+
+        <footer className="app__footer">
+          Amor Lineribus &middot; Alma Mater Europaea
+        </footer>
+      </div>
+    </HashRouter>
   );
 }
