@@ -2,6 +2,9 @@ import React from 'react';
 import RemoteMount from './RemoteMount';
 
 const loadAngular = () => import('angularRemote/Mount');
+const loadVue = () => import('vueRemote/Mount');
+
+
 
 export default function App() {
   return (
@@ -11,6 +14,7 @@ export default function App() {
       </header>
       <main>
         <RemoteMount load={loadAngular} />
+        <RemoteMount load={loadVue} />
       </main>
     </div>
   );

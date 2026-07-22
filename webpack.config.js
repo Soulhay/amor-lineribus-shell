@@ -40,6 +40,7 @@ module.exports = {
       name: 'shell',
       remotes: {
         angularRemote: `${ANGULAR_REMOTE_NAME}@http://localhost:4201/remoteEntry.js`,
+        vueRemote: 'vueRemote@http://localhost:4202/remoteEntry.js',
       },
       shared: {
         react: { singleton: true, requiredVersion: deps.react },
