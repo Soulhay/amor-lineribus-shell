@@ -5,13 +5,42 @@ import Landing from './Landing';
 import './styles/tokens.css';
 import './styles/app.css';
 import './styles/landing.css';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const loadVue = () => import('vueRemote/Mount');
 const loadAngular = () => import('angularRemote/Mount');
 
+/**
+ * Bridges navigation requests from remotes to the shell's router.
+ *
+ * A remote cannot import the shell's router without depending on the host,
+ * which would defeat independent deployment. It announces intent on a
+ * custom DOM event instead and the shell decides what to do with it — the
+ * remote stays unaware of how routing is implemented, or whether a shell
+ * is present at all.
+ */
+
+function RemoteNavigationBridge() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handler = (e) => {
+      const to = e.detail?.to;
+      if (typeof to === 'string') navigate(to);
+    };
+
+    window.addEventListener('amor:navigate', handler);
+    return () => window.removeEventListener('amor:navigate', handler);
+  }, [navigate]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <HashRouter>
+      <RemoteNavigationBridge />
       <div className="app">
         <header className="app__nav">
           <NavLink to="/" className="app__brand">
